@@ -203,6 +203,7 @@ export function PolicyTrackerComponent() {
   const [illustrationData, setIllustrationData] = useState("")
   const [showAccountForm, setShowAccountForm] = useState(false)
   const [accountEmail, setAccountEmail] = useState("")
+  const [showMintForm, setShowMintForm] = useState(false)
 
   const StatusIcon = ({ status }: { status: boolean | null }) => {
     if (status === true) return <CheckCircle2 className="h-5 w-5 text-green-400" />;
@@ -286,9 +287,16 @@ export function PolicyTrackerComponent() {
   }
 
   const handleMint = (policy: Policy) => {
-    console.log("Minting for policy:", policy.id);
-    // Add your minting logic here
+    setSelectedPolicy(policy)
+    setShowMintForm(true)
   }
+
+  const handleSendAccountEmail = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log("Sending account creation email to:", accountEmail);
+    // Add your email sending logic here
+    setShowAccountForm(false);
+  };
 
   useEffect(() => {
     console.log("Selected policy updated:", selectedPolicy);
@@ -565,7 +573,7 @@ export function PolicyTrackerComponent() {
           <DialogHeader>
             <DialogTitle className="text-lg font-semibold text-gray-100">Create Account for {selectedPolicy?.name}</DialogTitle>
           </DialogHeader>
-          <form className="space-y-4">
+          <form onSubmit={handleSendAccountEmail} className="space-y-4">
             <div>
               <Label htmlFor="accountEmail" className="text-gray-300">Email</Label>
               <Input
@@ -577,17 +585,43 @@ export function PolicyTrackerComponent() {
               />
             </div>
             <div>
-              <p className="text-gray-400">
-                By creating an Infinea account, you will be able to digitize your whole life insurance policy, 
-                participate in the $SOUND token, and enjoy other benefits.
-              </p>
+              <Label htmlFor="emailContent" className="text-gray-300">Email Content</Label>
+              <Textarea
+                id="emailContent"
+                value={`Dear ${selectedPolicy?.policyContactName},
+
+We are excited to inform you about the benefits of creating an infineo account. By creating an account, you will be able to digitize your whole life insurance policy, participate in the $SOUND token, and enjoy other benefits.
+
+Please find your contact information below:
+- Policy Number: ${selectedPolicy?.policyNumber}
+- Broker: ${selectedPolicy?.insuranceCompany.name}
+- Policy Holder: ${selectedPolicy?.policyContactName}
+- Email: ${accountEmail}
+
+Best regards,
+infineo Team`}
+                readOnly
+                className="bg-gray-700 text-gray-100 border-gray-600 h-64"
+              />
             </div>
-            <div className="flex justify-end">
-              <Button type="submit" className="bg-yellow-600 hover:bg-yellow-500">
-                Create Account
+            <div className="flex justify-end space-x-2">
+              <Button type="submit" className="bg-blue-600 hover:bg-blue-500">
+                Send Email
               </Button>
             </div>
           </form>
+          <div className="mt-4">
+            <Button 
+              onClick={() => {
+                console.log("Creating account for:", accountEmail);
+                // Add your account creation logic here
+                setShowAccountForm(false);
+              }} 
+              className="w-full bg-yellow-600 hover:bg-yellow-500"
+            >
+              Create Account
+            </Button>
+          </div>
         </DialogContent>
       </Dialog>
 
@@ -629,6 +663,44 @@ export function PolicyTrackerComponent() {
             <div className="flex justify-end">
               <Button onClick={handleSaveIllustrations} className="bg-blue-600 hover:bg-blue-500">
                 Save Illustrations
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Mint Form Dialog */}
+      <Dialog open={showMintForm} onOpenChange={setShowMintForm}>
+        <DialogContent className="bg-gray-800 text-gray-100 border border-gray-700">
+          <DialogHeader>
+            <DialogTitle className="text-lg font-semibold text-gray-100">Mint Policy {selectedPolicy?.policyNumber}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <p className="text-gray-400"><strong>Blockchain Account:</strong> {selectedPolicy?.blockchainInfo?.address || "Not available"}</p>
+            </div>
+            <div>
+              <p className="text-gray-400"><strong>Policy Number:</strong> {selectedPolicy?.policyNumber}</p>
+            </div>
+            <div>
+              <p className="text-gray-400"><strong>Broker:</strong> {selectedPolicy?.insuranceCompany.name}</p>
+            </div>
+            <div>
+              <p className="text-gray-400"><strong>Policy Holder:</strong> {selectedPolicy?.policyContactName}</p>
+            </div>
+            <div>
+              <p className="text-gray-400"><strong>Email:</strong> {selectedPolicy?.policyContactName.toLowerCase().replace(' ', '.')}@example.com</p>
+            </div>
+            <div className="flex justify-end">
+              <Button 
+                className="bg-green-600 hover:bg-green-500"
+                onClick={() => {
+                  console.log("Minting policy:", selectedPolicy?.id);
+                  // Add your minting logic here
+                  setShowMintForm(false);
+                }}
+              >
+                Mint
               </Button>
             </div>
           </div>
