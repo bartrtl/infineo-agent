@@ -345,8 +345,8 @@ export function PolicyTrackerComponent() {
                             onClick={() => handleCreateAccount(policy)}
                             className="ml-2 bg-yellow-600 text-gray-100 hover:bg-yellow-500"
                           >
-                            <Wallet className="h-4 w-4 mr-2" />
-                            Create Account
+                            <Mail className="h-4 w-4 mr-2" />
+                            Re-send Email
                           </Button>
                         )}
                       </div>
@@ -532,7 +532,7 @@ export function PolicyTrackerComponent() {
                             </div>
                           </DialogContent>
                         </Dialog>
-                        <Dialog>
+                        <Dialog key={selectedPolicy?.id}>
                           <DialogTrigger asChild>
                             <Button 
                               variant="outline" 
@@ -542,7 +542,6 @@ export function PolicyTrackerComponent() {
                                 console.log("Notes button clicked for policy:", policy);
                                 setSelectedPolicy(policy);
                               }}
-                              key={`notes-button-${policy.id}`}
                             >
                               <FileText className="h-4 w-4 mr-2" />
                               Notes
@@ -572,7 +571,7 @@ export function PolicyTrackerComponent() {
       <Dialog open={showAccountForm} onOpenChange={setShowAccountForm}>
         <DialogContent className="bg-gray-800 text-gray-100 border border-gray-700">
           <DialogHeader>
-            <DialogTitle className="text-lg font-semibold text-gray-100">Create Account for {selectedPolicy?.name}</DialogTitle>
+            <DialogTitle className="text-lg font-semibold text-gray-100">Account Creation for {selectedPolicy?.name}</DialogTitle>
           </DialogHeader>
           <form onSubmit={handleSendAccountEmail} className="space-y-4">
             <div>
@@ -607,22 +606,11 @@ infineo Team`}
             </div>
             <div className="flex justify-end space-x-2">
               <Button type="submit" className="bg-blue-600 hover:bg-blue-500">
-                Send Email
+                <Mail className="h-4 w-4 mr-2" />
+                Re-send Email
               </Button>
             </div>
           </form>
-          <div className="mt-4">
-            <Button 
-              onClick={() => {
-                console.log("Creating account for:", accountEmail);
-                // Add your account creation logic here
-                setShowAccountForm(false);
-              }} 
-              className="w-full bg-yellow-600 hover:bg-yellow-500"
-            >
-              Create Account
-            </Button>
-          </div>
         </DialogContent>
       </Dialog>
 
