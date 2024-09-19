@@ -532,7 +532,7 @@ export function PolicyTrackerComponent() {
                             </div>
                           </DialogContent>
                         </Dialog>
-                        <Dialog key={selectedPolicy?.id}>
+                        <Dialog>
                           <DialogTrigger asChild>
                             <Button 
                               variant="outline" 
@@ -542,6 +542,7 @@ export function PolicyTrackerComponent() {
                                 console.log("Notes button clicked for policy:", policy);
                                 setSelectedPolicy(policy);
                               }}
+                              key={`notes-button-${policy.id}`}
                             >
                               <FileText className="h-4 w-4 mr-2" />
                               Notes
